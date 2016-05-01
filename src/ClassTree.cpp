@@ -108,6 +108,12 @@ void ClassTree::enrollClass(string title){
                     found = true;
                     cout<<"You are already signed up for "<<schedule[i].name<<"."<<endl;
                 }
+                //Checks if class conflict with each other (ONLY AT EXACT SAME TIME)
+                else if(schedule[i].day == foundClass->day && schedule[i].time == foundClass->time)
+                {
+                    found = true;
+                    cout<<"You can't add this class because it is at the same time as "<<schedule[i].name<<"."<<endl;
+                }
             }
             if(!found){
                 addClassToSchedule(foundClass->name, foundClass->department, foundClass->courseNumber, foundClass->teacher, foundClass->time, foundClass->day);
