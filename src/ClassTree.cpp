@@ -1,8 +1,6 @@
 #include "ClassTree.h"
 #include <string>
-//#include <stdlib.h>  /*atoi*/
-//#include <stdio.h>
-//#include <iostream>
+
 ClassTree::ClassTree()
 {
     root = NULL;
@@ -159,7 +157,6 @@ void ClassTree::enrollClass(string title){
             bool found = false;
 
             for(int i = 0; i < schedule.size(); i++){ //check if they already signed up for it
-                cout<<schedule[i].day<<"   "<<foundClass->day<<endl;
                 if(schedule[i].name == title){
                     found = true;
                     cout<<"You are already signed up for "<<schedule[i].name<<"."<<endl;
