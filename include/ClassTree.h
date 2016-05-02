@@ -44,6 +44,9 @@ class ClassTree
         void dropClass(string title);
         void addClassToSchedule(string name, string department, int courseNumber, string teacher, string time, string day);
         void printClassSchedule();
+        /**Determine if two classes are at conflicting times when enrolling*/
+        void classTimes(int& time1, int& time2, string class1);
+        bool classConflict(string title, string schedule);
     protected:
     private:
         std::vector<ClassNode> schedule;

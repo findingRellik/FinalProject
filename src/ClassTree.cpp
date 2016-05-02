@@ -1,5 +1,8 @@
 #include "ClassTree.h"
-
+#include <string>
+//#include <stdlib.h>  /*atoi*/
+//#include <stdio.h>
+//#include <iostream>
 ClassTree::ClassTree()
 {
     root = NULL;
@@ -92,6 +95,58 @@ ClassNode* ClassTree::search(string name){
     return NULL;
 }
 
+bool ClassTree::classConflict(string title, string schedule)
+{
+    int t1, t2, c1, c2;
+    classTimes(t1,t2,title);//Class time of enrolling class
+    classTimes(c1,c2, schedule);//class time of class on schedule
+
+    if(c1 >= t1 && c1 <= t2)
+        return true;
+    else if(c2 >= t1 && c2 <=t2)
+        return true;
+    else
+        return false;
+}
+
+/**Checks if the searched/enrolled class conflicts with schedule*/
+void ClassTree::classTimes(int& time1, int& time2, string class1)
+{
+    int num1, num2;
+    int counter = 0;
+    for(int i = 0; i < class1.length(); i++)
+    {
+        if(i == 0 || class1[i-1] == '-')//(this number):xx
+        {
+            num1 = class1[i] - 48;
+            if(class1[i+1] != ':') //For two digit cases
+            {
+                num1 *= 10;
+                num1 += ((int)class1[i+1]-48);//e.g. 11 or 12 o'clock
+            }
+            else //if(num1 < 7 && num1 > 0) //Converting to military time 1pm = 13 --1pm-6pm
+                num1 += 12;
+        }
+        else if(class1[i-1] == ':')//  xx:(This number)
+        {
+            num2 = 10*((int)class1[i]-48);
+            num2 += ((int)class1[i+1]-48);
+            if(counter == 0)
+            {
+                time1 = 100*num1 + num2;
+                counter++;
+            }
+            else
+            {
+                time2 = 100*num1 + num2;
+                //cout<<time1<<" && "<<time2<<endl;
+                return;
+            }
+        }
+    }
+
+}
+
 void ClassTree::enrollClass(string title){
     ClassNode *foundClass = search(title);
 
@@ -104,15 +159,19 @@ void ClassTree::enrollClass(string title){
             bool found = false;
 
             for(int i = 0; i < schedule.size(); i++){ //check if they already signed up for it
+                cout<<schedule[i].day<<"   "<<foundClass->day<<endl;
                 if(schedule[i].name == title){
                     found = true;
                     cout<<"You are already signed up for "<<schedule[i].name<<"."<<endl;
                 }
-                //Checks if class conflict with each other (ONLY AT EXACT SAME TIME)
-                else if(schedule[i].day == foundClass->day && schedule[i].time == foundClass->time)
+                //Checks if class conflict with each other
+                else if(schedule[i].day == foundClass->day)
                 {
-                    found = true;
-                    cout<<"You can't add this class because it is at the same time as "<<schedule[i].name<<"."<<endl;
+                    if(classConflict(foundClass->time, schedule[i].time) == true)
+                    {
+                        found = true;
+                        cout<<"You can't add this class because it conflicts with "<<schedule[i].name<<"."<<endl;
+                    }
                 }
             }
             if(!found){
